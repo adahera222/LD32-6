@@ -17,15 +17,14 @@
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
 					<archive>
-						<index>true</index>
 						<manifest>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<mainClass>aritzh.ld28.Main</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
 				<executions>
 					<execution>
-						<id>package-jar-with-dependencies</id>
+						<id>bundle-release</id>
 						<phase>package</phase>
 						<goals>
 							<goal>single</goal>
@@ -41,17 +40,13 @@
 					<target>1.7</target>
 				</configuration>
 			</plugin>
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.4</version>
-				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>aritzh.ld28.Main</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
 		</plugins>
 	</build>
+	<dependencies>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>15.0</version>
+		</dependency>
+	</dependencies>
 </project>
