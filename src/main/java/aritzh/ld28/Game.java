@@ -9,6 +9,7 @@ import aritzh.ld28.screen.Screen;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 import java.awt.Canvas;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -82,7 +83,7 @@ public class Game extends Canvas implements Runnable {
     public synchronized void stop() {
         this.running = false;
         this.currScreen.closing();
-        if(this.getParent() instanceof Window) ((Window)this.getParent()).dispose();
+        this.getParentWindow().dispose();
         try {
             this.thread.join(3000);
         } catch (InterruptedException e) {
@@ -199,5 +200,13 @@ public class Game extends Canvas implements Runnable {
 
     public Screen getCurrentScreen() {
         return this.currScreen;
+    }
+
+    private Window getParentWindow(){
+        Container parent = this.getParent();
+        while (parent.getParent() != null && !(parent instanceof Window)){
+            parent = parent.getParent();
+        }
+        return (Window) parent;
     }
 }
