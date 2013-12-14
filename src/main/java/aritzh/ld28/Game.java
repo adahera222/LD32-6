@@ -1,9 +1,12 @@
 package aritzh.ld28;
 
+import aritzh.ld28.render.Render;
+import aritzh.ld28.render.SpriteSheet;
+import aritzh.ld28.sound.Sound;
+
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 import java.awt.Canvas;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.WindowAdapter;
@@ -16,12 +19,18 @@ import java.awt.image.BufferStrategy;
  */
 public class Game extends Canvas implements Runnable {
 
+    public static Game INSTANCE;
+    public final SpriteSheet sheet;
     private final int width;
     private final int height;
     private final boolean applet;
     private final Thread thread;
-    private boolean running;
+    private final Input input;
     private final double WANTED_UPS = 60.0;
+    private final Render render;
+    private final Sound jumpSound;
+    private final Board board;
+    private boolean running;
     private int fps, ups;
     private JFrame frame;
 
@@ -30,8 +39,14 @@ public class Game extends Canvas implements Runnable {
         this.height = height;
         this.applet = applet;
         this.thread = new Thread(this, "Main Game Thread");
+        this.render = new Render(this);
+        this.sheet = new SpriteSheet(this.getClass().getResourceAsStream("/textures/sheet.png"));
+        this.jumpSound = new Sound(this.getClass().getResourceAsStream("/audio/jump.wav"));
+        this.input = new Input(this);
+        this.addMouseListener(this.input);
+        this.board = new Board(this);
 
-        if(!this.applet) this.createWindow();
+        if (!this.applet) this.createWindow();
     }
 
     private void createWindow() {
@@ -53,12 +68,6 @@ public class Game extends Canvas implements Runnable {
         });
     }
 
-    public synchronized void start() {
-        this.running = true;
-        this.frame.setVisible(true);
-        this.thread.start();
-    }
-
     public synchronized void stop() {
         this.running = false;
         try {
@@ -67,6 +76,12 @@ public class Game extends Canvas implements Runnable {
             System.err.println("Thread could not be stopped within 3 seconds");
             e.printStackTrace();
         }
+    }
+
+    public synchronized void start() {
+        this.running = true;
+        this.frame.setVisible(true);
+        this.thread.start();
     }
 
     @Override
@@ -100,20 +115,23 @@ public class Game extends Canvas implements Runnable {
 
     private void updatePS() {
         System.out.println("FPS: " + fps + "\t|\tUPS: " + this.ups);
+        this.jumpSound.play();
     }
 
     private void render() {
         BufferStrategy bs = this.getBufferStrategy();
-        if(bs == null) {
+        if (bs == null) {
             this.createBufferStrategy(3);
             return;
         }
 
         Graphics g = bs.getDrawGraphics();
 
-        g.setColor(Color.BLACK);
-        g.fillRect(0, 0, this.width, this.height);
+        render.clear();
 
+        this.board.render(this.render);
+
+        g.drawImage(this.render.getImage(), 0, 0, this.width, this.height, null);
 
         g.dispose();
         bs.show();
@@ -121,5 +139,17 @@ public class Game extends Canvas implements Runnable {
 
     private void update(double delta) {
 
+    }
+
+    public int getWidth() {
+        return this.width;
+    }
+
+    public int getHeight() {
+        return this.height;
+    }
+
+    public Board getBoard() {
+        return this.board;
     }
 }
