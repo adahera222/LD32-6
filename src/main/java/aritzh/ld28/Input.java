@@ -2,12 +2,13 @@ package aritzh.ld28;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 
 /**
  * @author Aritz Lopez
  * @license Lesser GNU Public License v3 (http://www.gnu.org/licenses/lgpl.html)
  */
-public class Input extends MouseAdapter {
+public class Input extends MouseAdapter implements MouseMotionListener{
 
     private Game game;
 
@@ -18,6 +19,7 @@ public class Input extends MouseAdapter {
     @Override
     public void mouseClicked(MouseEvent e) {
         super.mouseClicked(e);
+        game.getBoard().mouseClicked(e);
     }
 
     @Override
