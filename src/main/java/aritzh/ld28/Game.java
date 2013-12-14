@@ -50,6 +50,7 @@ public class Game extends Canvas implements Runnable {
         this.input = new Input(this);
         this.addMouseListener(this.input);
         this.addMouseMotionListener(this.input);
+        this.addKeyListener(this.input);
 
         if (!this.applet) this.createWindow();
     }
