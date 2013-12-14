@@ -8,7 +8,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Game game = Game.getGame(800, 800, false);
+        Game game = Game.getGame(750, 750, false);
         game.start();
 
     }
