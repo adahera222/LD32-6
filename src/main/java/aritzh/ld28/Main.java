@@ -7,9 +7,7 @@ package aritzh.ld28;
 public class Main {
 
     public static void main(String[] args) {
-
         Game game = Game.getGame(602, 652, false);
         game.start();
-
     }
 }

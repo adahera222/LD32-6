@@ -9,11 +9,9 @@ import aritzh.ld28.screen.elements.ProgressBar;
 import aritzh.ld28.sound.Sound;
 import aritzh.ld28.util.Vector2i;
 
-import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
@@ -234,22 +232,12 @@ public class Board extends Screen {
         if (!this.paused) return false;
         this.paused = false;
         boolean ret = this.isStartPause;
-        if (!this.isStartPause) this.centerMouseInScreen();
         this.isStartPause = false;
         currentTime = System.currentTimeMillis() + pausedDiff;
         pausedDiff = -1;
         this.updateTiming();
 
         return ret;
-    }
-
-    private void centerMouseInScreen() {
-        try {
-            Robot robot = new Robot();
-            robot.mouseMove(this.game.getOnScreenX() + this.game.getWidth() / 2, this.game.getOnScreenY() + this.game.getHeight() / 2);
-        } catch (AWTException e) {
-            e.printStackTrace();
-        }
     }
 
     private Vector2i getSquareCoords(int screenX, int screenY) {
