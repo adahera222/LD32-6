@@ -194,6 +194,14 @@ public class Game extends Canvas implements Runnable {
         this.currScreen = new AboutScreen(this);
     }
 
+    public int getOnScreenX(){
+        return this.frame.getX();
+    }
+
+    public int getOnScreenY(){
+        return this.frame.getY();
+    }
+
     public int getWidth() {
         return this.width;
     }
