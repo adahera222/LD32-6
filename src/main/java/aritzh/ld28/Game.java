@@ -2,6 +2,10 @@ package aritzh.ld28;
 
 import aritzh.ld28.render.Render;
 import aritzh.ld28.render.SpriteSheet;
+import aritzh.ld28.screen.AboutScreen;
+import aritzh.ld28.screen.GameOverScreen;
+import aritzh.ld28.screen.MainMenuScreen;
+import aritzh.ld28.screen.Screen;
 
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
@@ -20,6 +24,9 @@ import java.awt.image.BufferStrategy;
  */
 public class Game extends Canvas implements Runnable {
 
+    public static final Font bigFont = new Font("Arial", Font.BOLD, 24);
+    private static final double WANTED_UPS = 60.0;
+    private static final Font font = new Font("Arial", Font.BOLD, 14);
     public static Game INSTANCE;
     public final SpriteSheet sheet;
     private final int width;
@@ -27,13 +34,11 @@ public class Game extends Canvas implements Runnable {
     private final boolean applet;
     private final Thread thread;
     private final Input input;
-    private final double WANTED_UPS = 60.0;
     private final Render render;
-    private final Board board;
-    private final Font font = new Font("Arial", Font.BOLD, 24);
     private boolean running;
     private int fps, ups;
     private JFrame frame;
+    private Screen currScreen;
 
     private Game(int width, int height, boolean applet) {
         this.width = width;
@@ -45,7 +50,6 @@ public class Game extends Canvas implements Runnable {
         this.input = new Input(this);
         this.addMouseListener(this.input);
         this.addMouseMotionListener(this.input);
-        this.board = new Board(this);
 
         if (!this.applet) this.createWindow();
     }
@@ -76,6 +80,8 @@ public class Game extends Canvas implements Runnable {
 
     public synchronized void stop() {
         this.running = false;
+        this.currScreen.closing();
+        this.frame.dispose();
         try {
             this.thread.join(3000);
         } catch (InterruptedException e) {
@@ -102,7 +108,7 @@ public class Game extends Canvas implements Runnable {
 
         final double NSPerTick = 1000000000.0 / WANTED_UPS;
         double delta = 0.0;
-        board.start();
+        this.currScreen = new MainMenuScreen(this);
         while (this.running) {
             long now = System.nanoTime();
             delta += (now - lastTime) / NSPerTick;
@@ -125,32 +131,66 @@ public class Game extends Canvas implements Runnable {
         }
     }
 
-    private void updatePS() {
-        System.out.println("FPS: " + fps + "\t|\tUPS: " + this.ups);
-        //this.jumpSound.play();
+    private void update(double delta) {
+        this.currScreen.update();
+    }
+
+    public void showGameOverScreen(int score) {
+        this.currScreen = new GameOverScreen(this, score);
     }
 
     private void render() {
+        if (!this.running) return;
         BufferStrategy bs = this.getBufferStrategy();
         if (bs == null) {
             this.createBufferStrategy(3);
             return;
         }
-
         Graphics g = bs.getDrawGraphics();
-        g.setFont(this.font);
+        g.setFont(Game.font);
         render.clear();
 
-        this.board.renderBoard(this.render);
+        this.currScreen.render(this.render);
 
         g.drawImage(this.render.getImage(), 0, 0, this.width, this.height, null);
 
-        this.board.renderStrings(g);
+        this.currScreen.renderGraphics(g);
         g.dispose();
         bs.show();
     }
 
-    private void update(double delta) {
+    private void updatePS() {
+        System.out.println("FPS: " + fps + "\t|\tUPS: " + this.ups);
+        this.frame.setTitle("LD28 - FPS: " + this.fps + " - UPS: " + this.ups);
+        this.currScreen.updatePS();
+    }
+
+    public void startGame() {
+        this.currScreen.closing();
+        this.currScreen = new Board(this);
+        ((Board) this.currScreen).start();
+    }
+
+    public void pause() {
+        if (this.currScreen instanceof Board) {
+            ((Board) this.currScreen).pause();
+        }
+    }
+
+    public void resume() {
+        if (this.currScreen instanceof Board) {
+            ((Board) this.currScreen).resume();
+        }
+    }
+
+    public void showMainMenu() {
+        this.currScreen.closing();
+        this.currScreen = new MainMenuScreen(this);
+    }
+
+    public void showAbout() {
+        this.currScreen.closing();
+        this.currScreen = new AboutScreen(this);
     }
 
     public int getWidth() {
@@ -161,7 +201,7 @@ public class Game extends Canvas implements Runnable {
         return this.height;
     }
 
-    public Board getBoard() {
-        return this.board;
+    public Screen getCurrentScreen() {
+        return this.currScreen;
     }
 }

@@ -25,18 +25,18 @@ public class Input extends MouseAdapter implements MouseMotionListener{
     @Override
     public void mouseReleased(MouseEvent e) {
         super.mouseReleased(e);
-        game.getBoard().mouseReleased();
+        game.getCurrentScreen().mouseReleased(e);
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
         super.mousePressed(e);
-        game.getBoard().mouseClicked(e);
+        game.getCurrentScreen().mousePressed(e);
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
         super.mouseMoved(e);
-        game.getBoard().mouseMoved(e);
+        game.getCurrentScreen().mouseMoved(e);
     }
 }
