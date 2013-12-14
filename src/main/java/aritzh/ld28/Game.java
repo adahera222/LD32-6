@@ -13,6 +13,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
@@ -50,6 +51,7 @@ public class Game extends Canvas implements Runnable {
         this.addMouseListener(this.input);
         this.addMouseMotionListener(this.input);
         this.addKeyListener(this.input);
+        this.setSize(width, height);
 
         if (!this.applet) this.createWindow();
     }
@@ -60,7 +62,6 @@ public class Game extends Canvas implements Runnable {
         final Dimension preferredSize = new Dimension(width, height);
         this.frame.getContentPane().setPreferredSize(preferredSize);
         this.frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-
 
         this.frame.add(this);
         this.frame.pack();
@@ -81,7 +82,7 @@ public class Game extends Canvas implements Runnable {
     public synchronized void stop() {
         this.running = false;
         this.currScreen.closing();
-        this.frame.dispose();
+        if(this.getParent() instanceof Window) ((Window)this.getParent()).dispose();
         try {
             this.thread.join(3000);
         } catch (InterruptedException e) {
@@ -97,7 +98,7 @@ public class Game extends Canvas implements Runnable {
 
     public synchronized void start() {
         this.running = true;
-        this.frame.setVisible(true);
+        if(!this.applet) this.frame.setVisible(true);
         this.thread.start();
     }
 
@@ -161,7 +162,7 @@ public class Game extends Canvas implements Runnable {
 
     private void updatePS() {
         System.out.println("FPS: " + fps + "\t|\tUPS: " + this.ups);
-        this.frame.setTitle("LD28 - FPS: " + this.fps + " - UPS: " + this.ups);
+        if(!this.applet) this.frame.setTitle("LD28 - FPS: " + this.fps + " - UPS: " + this.ups);
         this.currScreen.updatePS();
     }
 
@@ -181,11 +182,11 @@ public class Game extends Canvas implements Runnable {
     }
 
     public int getOnScreenX(){
-        return this.frame.getX();
+        return this.getParent().getX();
     }
 
     public int getOnScreenY(){
-        return this.frame.getY();
+        return this.getParent().getY();
     }
 
     public int getWidth() {
