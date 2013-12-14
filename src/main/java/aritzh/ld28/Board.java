@@ -115,7 +115,6 @@ public class Board extends Screen {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        System.out.println("Key pressed!");
         if (e.getKeyCode() == KeyEvent.VK_P || e.getKeyCode() == KeyEvent.VK_ESCAPE) this.pause();
     }
 
