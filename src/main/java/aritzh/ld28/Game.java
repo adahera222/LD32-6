@@ -34,7 +34,12 @@ public class Game extends Canvas implements Runnable {
     private int fps, ups;
     private JFrame frame;
 
-    public Game(int width, int height, boolean applet) {
+    public static Game getGame(int width, int height, boolean applet){
+        if(INSTANCE == null) return INSTANCE = new Game(width, height, applet);
+        else return INSTANCE;
+    }
+
+    private Game(int width, int height, boolean applet) {
         this.width = width;
         this.height = height;
         this.applet = applet;
