@@ -33,6 +33,17 @@ public class Sound {
         t.start();
     }
 
+    public void loop() {
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Sound.this.clip.loop();
+            }
+        }, "Sound thread");
+        t.setDaemon(true);
+        t.start();
+    }
+
     public void stop() {
         this.clip.stop();
     }
