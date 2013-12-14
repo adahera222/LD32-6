@@ -2,7 +2,6 @@ package aritzh.ld28;
 
 import aritzh.ld28.render.Render;
 import aritzh.ld28.render.SpriteSheet;
-import aritzh.ld28.sound.Sound;
 
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
@@ -30,7 +29,6 @@ public class Game extends Canvas implements Runnable {
     private final Input input;
     private final double WANTED_UPS = 60.0;
     private final Render render;
-    private final Sound jumpSound;
     private final Board board;
     private final Font font = new Font("Arial", Font.BOLD, 24);
     private boolean running;
@@ -44,7 +42,6 @@ public class Game extends Canvas implements Runnable {
         this.thread = new Thread(this, "Main Game Thread");
         this.render = new Render(this);
         this.sheet = new SpriteSheet(this.getClass().getResourceAsStream("/textures/sheet.png"));
-        this.jumpSound = new Sound(this.getClass().getResourceAsStream("/audio/jump.wav"));
         this.input = new Input(this);
         this.addMouseListener(this.input);
         this.addMouseMotionListener(this.input);
