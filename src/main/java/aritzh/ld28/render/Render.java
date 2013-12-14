@@ -26,7 +26,7 @@ public class Render {
     }
 
     public void clear() {
-        Arrays.fill(this.pixels, 0xFF000000);
+        Arrays.fill(this.pixels, 0xFF000066);
     }
 
     public void drawSprite(int x, int y, int width, int height, int[] pixels) {
