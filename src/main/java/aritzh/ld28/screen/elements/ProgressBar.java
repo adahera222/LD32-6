@@ -29,6 +29,7 @@ public class ProgressBar {
 
     public void setProgress(int progress) {
         this.progress = progress;
+        if(this.progress>this.max) this.progress = this.max;
     }
 
     public void render(Graphics g, int x, int y, int width, int height) {
