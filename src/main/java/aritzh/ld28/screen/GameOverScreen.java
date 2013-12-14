@@ -37,7 +37,7 @@ public class GameOverScreen extends Screen {
     public void update() {
         super.update();
         if (this.mainMenu.wasActivated()) {
-            this.game.showMainMenu();
+            this.game.openScreen(new MainMenuScreen(this.game));
         } else if (this.playAgain.wasActivated()) {
             this.game.startGame();
         }

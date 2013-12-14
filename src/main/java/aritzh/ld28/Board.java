@@ -3,6 +3,7 @@ package aritzh.ld28;
 import aritzh.ld28.board.Square;
 import aritzh.ld28.render.Render;
 import aritzh.ld28.render.SpriteSheet;
+import aritzh.ld28.screen.PauseScreen;
 import aritzh.ld28.screen.Screen;
 import aritzh.ld28.screen.elements.ProgressBar;
 import aritzh.ld28.sound.Sound;
@@ -37,7 +38,7 @@ public class Board extends Screen {
     private int score;
     private int gameOverCountdown = 60;
     private int gameOverCountdownMax = 60;
-    private boolean paused;
+    private boolean paused, isStartPause;
     private long pausedDiff = -1, currentMax = 1000, currentTime, millisLeft;
 
     public Board(Game game) {
@@ -53,6 +54,7 @@ public class Board extends Screen {
         this.lightAnotherUp();
         this.bgSound.loop();
         this.currentTime = System.currentTimeMillis() + this.currentMax;
+        this.isStartPause = true;
         this.pause();
     }
 
@@ -60,6 +62,26 @@ public class Board extends Screen {
         this.updateTiming();
         this.paused = true;
         this.pausedDiff = millisLeft;
+        if (!this.isStartPause) this.game.silentSwitch(new PauseScreen(this));
+    }
+
+    private void updateTiming() {
+        if (this.paused) return;
+        this.millisLeft = this.currentTime - System.currentTimeMillis();
+
+        if (this.millisLeft <= 0) {
+            this.millisLeft = 0;
+            if (!this.dead) this.gameOver();
+        }
+        this.currentBar.setSubdivisions((int) (this.currentMax / 1000));
+        this.currentBar.setMax((int) this.currentMax);
+        this.currentBar.setProgress((int) this.millisLeft);
+    }
+
+    public void gameOver() {
+        this.dead = true;
+        this.bgSound.stop();
+        this.game.showGameOverScreen(this.score);
     }
 
     private void lightAnotherUp() {
@@ -87,30 +109,6 @@ public class Board extends Screen {
 
     private void clear() {
         for (Square[] squareRow : this.squares) Arrays.fill(squareRow, Square.NORMAL);
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        this.click = new Vector2i(-1, -1);
-        this.mouseMoved(null);
-    }
-
-    public void resume() {
-        this.paused = false;
-        this.centerMouseInScreen();
-        currentTime = System.currentTimeMillis() + pausedDiff;
-        pausedDiff = -1;
-        this.updateTiming();
-
-    }
-
-    private void centerMouseInScreen() {
-        try {
-            Robot robot = new Robot();
-            robot.mouseMove(this.game.getOnScreenX() + this.game.getWidth()/2, this.game.getOnScreenY() + this.game.getHeight()/2);
-        } catch (AWTException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -157,24 +155,6 @@ public class Board extends Screen {
         this.gameOverBar.render(g, MARGIN, 40, this.game.getWidth() - 2 * MARGIN, 15);
     }
 
-    private void updateTiming() {
-        if (this.paused) return;
-        this.millisLeft = this.currentTime - System.currentTimeMillis();
-
-        if (this.millisLeft <= 0) {
-            this.millisLeft = 0;
-            if (!this.dead) this.gameOver();
-        }
-        this.currentBar.setMax((int) this.currentMax);
-        this.currentBar.setProgress((int) this.millisLeft);
-    }
-
-    public void gameOver() {
-        this.dead = true;
-        this.bgSound.stop();
-        this.game.showGameOverScreen(this.score);
-    }
-
     @Override
     public void updatePS() {
         if (this.paused) return;
@@ -196,8 +176,7 @@ public class Board extends Screen {
     public void mousePressed(MouseEvent e) {
 
         if (this.paused) {
-            this.resume();
-            return;
+            if (!this.resume()) return;
         }
         this.updateTiming();
         if (dead) return;
@@ -216,13 +195,13 @@ public class Board extends Screen {
                 break;
             case LIT:
                 this.lightAnotherUp();
-                while(currentMax - this.millisLeft>1000) currentMax -=1000;
+                while (currentMax - this.millisLeft > 1000) currentMax -= 1000;
                 currentTime = System.currentTimeMillis() + currentMax;
                 this.updateTiming();
                 score += 20;
                 break;
             case UPGRADE:
-                while(currentMax - this.millisLeft>1000) currentMax -=1000;
+                while (currentMax - this.millisLeft > 1000) currentMax -= 1000;
                 this.currentMax += UPGRADE_EXTRA_TIME;
                 this.gameOverCountdownMax++;
                 this.gameOverCountdown++;
@@ -234,9 +213,43 @@ public class Board extends Screen {
     }
 
     @Override
+    public void mouseReleased(MouseEvent e) {
+        this.click = new Vector2i(-1, -1);
+        this.mouseMoved(null);
+    }
+
+    @Override
     public void mouseMoved(MouseEvent e) {
-        if(e == null) this.hover = new Vector2i(-1, -1);
+        if (e == null) this.hover = new Vector2i(-1, -1);
         else this.hover = this.getSquareCoords(e.getX(), e.getY());
+    }
+
+    @Override
+    public void opening() {
+        super.opening();
+        if (this.paused && !this.isStartPause) this.resume();
+    }
+
+    public boolean resume() {
+        if (!this.paused) return false;
+        this.paused = false;
+        boolean ret = this.isStartPause;
+        if (!this.isStartPause) this.centerMouseInScreen();
+        this.isStartPause = false;
+        currentTime = System.currentTimeMillis() + pausedDiff;
+        pausedDiff = -1;
+        this.updateTiming();
+
+        return ret;
+    }
+
+    private void centerMouseInScreen() {
+        try {
+            Robot robot = new Robot();
+            robot.mouseMove(this.game.getOnScreenX() + this.game.getWidth() / 2, this.game.getOnScreenY() + this.game.getHeight() / 2);
+        } catch (AWTException e) {
+            e.printStackTrace();
+        }
     }
 
     private Vector2i getSquareCoords(int screenX, int screenY) {

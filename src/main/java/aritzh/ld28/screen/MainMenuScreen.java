@@ -67,7 +67,7 @@ public class MainMenuScreen extends Screen {
         if(start.wasActivated()){
             this.game.startGame();
         } else if(about.wasActivated()){
-            this.game.showAbout();
+            this.game.openScreen(new AboutScreen(this.game));
         } else if(exit.wasActivated()){
             this.game.stop();
         }

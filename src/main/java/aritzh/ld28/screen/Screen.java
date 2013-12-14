@@ -92,4 +92,7 @@ public abstract class Screen implements MouseMotionListener, MouseListener, KeyL
 
     }
 
+    public void opening() {
+
+    }
 }

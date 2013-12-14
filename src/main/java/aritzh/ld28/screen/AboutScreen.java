@@ -29,7 +29,7 @@ public class AboutScreen extends Screen {
     @Override
     public void update() {
         super.update();
-        if (this.back.wasActivated()) this.game.showMainMenu();
+        if (this.back.wasActivated()) this.game.openScreen(new MainMenuScreen(this.game));
     }
 
     @Override

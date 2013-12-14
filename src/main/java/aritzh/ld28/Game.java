@@ -2,7 +2,6 @@ package aritzh.ld28;
 
 import aritzh.ld28.render.Render;
 import aritzh.ld28.render.SpriteSheet;
-import aritzh.ld28.screen.AboutScreen;
 import aritzh.ld28.screen.GameOverScreen;
 import aritzh.ld28.screen.MainMenuScreen;
 import aritzh.ld28.screen.Screen;
@@ -167,31 +166,18 @@ public class Game extends Canvas implements Runnable {
     }
 
     public void startGame() {
-        this.currScreen.closing();
-        this.currScreen = new Board(this);
+        this.openScreen(new Board(this));
         ((Board) this.currScreen).start();
     }
 
-    public void pause() {
-        if (this.currScreen instanceof Board) {
-            ((Board) this.currScreen).pause();
-        }
-    }
-
-    public void resume() {
-        if (this.currScreen instanceof Board) {
-            ((Board) this.currScreen).resume();
-        }
-    }
-
-    public void showMainMenu() {
+    public void openScreen(Screen screen){
         this.currScreen.closing();
-        this.currScreen = new MainMenuScreen(this);
+        this.currScreen = screen;
+        this.currScreen.opening();
     }
 
-    public void showAbout() {
-        this.currScreen.closing();
-        this.currScreen = new AboutScreen(this);
+    public void silentSwitch(Screen screen){
+        (this.currScreen = screen).opening();
     }
 
     public int getOnScreenX(){
