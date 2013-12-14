@@ -21,39 +21,38 @@ public class Input extends MouseAdapter implements MouseMotionListener, KeyListe
     @Override
     public void mouseClicked(MouseEvent e) {
         super.mouseClicked(e);
-
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
         super.mouseReleased(e);
-        game.getCurrentScreen().mouseReleased(e);
+        if(!(this.game.getCurrentScreen() == null))game.getCurrentScreen().mouseReleased(e);
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
         super.mousePressed(e);
-        game.getCurrentScreen().mousePressed(e);
+        if(!(this.game.getCurrentScreen() == null))game.getCurrentScreen().mousePressed(e);
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
         super.mouseMoved(e);
-        game.getCurrentScreen().mouseMoved(e);
+        if(!(this.game.getCurrentScreen() == null))game.getCurrentScreen().mouseMoved(e);
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
-        game.getCurrentScreen().keyTyped(e);
+        if(!(this.game.getCurrentScreen() == null))game.getCurrentScreen().keyTyped(e);
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        game.getCurrentScreen().keyPressed(e);
+        if(!(this.game.getCurrentScreen() == null))game.getCurrentScreen().keyPressed(e);
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        game.getCurrentScreen().keyReleased(e);
+        if(!(this.game.getCurrentScreen() == null))game.getCurrentScreen().keyReleased(e);
     }
 }
