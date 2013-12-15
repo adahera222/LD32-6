@@ -39,11 +39,14 @@ public class PauseScreen extends Screen {
     }
 
     @Override
-    public void update() {
-        super.update();
+    public void update(boolean hasFocus) {
+        super.update(hasFocus);
         if (this.backToGame.wasActivated()) {
             this.game.openScreen(this.board);
-        } else if (this.toMainMenu.wasActivated()) this.game.openScreen(new MainMenuScreen(this.game));
+        } else if (this.toMainMenu.wasActivated()) {
+            this.board.closing();
+            this.game.openScreen(new MainMenuScreen(this.game));
+        }
     }
 
     @Override
@@ -58,6 +61,9 @@ public class PauseScreen extends Screen {
         super.mouseReleased(e);
         this.backToGame.mouseReleased(e);
         this.toMainMenu.mouseReleased(e);
+        if(this.game.soundButton.contains(e.getX(), e.getY())){
+            this.game.switchMute();
+        }
     }
 
     @Override

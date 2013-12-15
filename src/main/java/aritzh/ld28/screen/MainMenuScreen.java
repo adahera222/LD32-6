@@ -1,6 +1,7 @@
 package aritzh.ld28.screen;
 
 import aritzh.ld28.Game;
+import aritzh.ld28.render.Render;
 import aritzh.ld28.screen.elements.Button;
 
 import java.awt.Font;
@@ -23,8 +24,13 @@ public class MainMenuScreen extends Screen {
     }
 
     @Override
+    public void render(Render render) {
+        super.render(render);
+    }
+
+    @Override
     public void renderGraphics(Graphics g) {
-        super.renderGraphics(g);
+        //super.renderGraphics(g);
 
         Font f = g.getFont();
         g.setFont(Game.bigFont);
@@ -58,11 +64,14 @@ public class MainMenuScreen extends Screen {
         start.mouseReleased(e);
         about.mouseReleased(e);
         exit.mouseReleased(e);
+        if(this.game.soundButton.contains(e.getX(), e.getY())){
+            this.game.switchMute();
+        }
     }
 
     @Override
-    public void update() {
-        super.update();
+    public void update(boolean hasFocus) {
+        super.update(hasFocus);
 
         if (start.wasActivated()) {
             this.game.startGame();

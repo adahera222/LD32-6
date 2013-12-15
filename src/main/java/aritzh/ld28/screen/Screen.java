@@ -41,7 +41,7 @@ public abstract class Screen implements MouseMotionListener, MouseListener, KeyL
 
     }
 
-    public void update() {
+    public void update(boolean hasFocus) {
 
     }
 

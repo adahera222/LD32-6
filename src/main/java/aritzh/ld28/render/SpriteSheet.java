@@ -11,23 +11,28 @@ import java.io.InputStream;
  */
 public class SpriteSheet {
 
-    public static final int SPRITE_SIZE = 64;
+    private final int size;
     private final BufferedImage image;
     private final Sprite[][] loadedSprites;
 
-    public SpriteSheet(InputStream stream) {
+    public SpriteSheet(InputStream stream, int size) {
+        this.size = size;
         try {
             this.image = ImageIO.read(stream);
         } catch (IOException e) {
             throw new IllegalArgumentException("Error loading spritesheet image", e);
         }
-        this.loadedSprites = new Sprite[this.image.getWidth() / SPRITE_SIZE][this.image.getHeight() / SPRITE_SIZE];
+        this.loadedSprites = new Sprite[this.image.getWidth() / this.size][this.image.getHeight() / this.size];
     }
 
     public Sprite getSprite(int x, int y) {
         if (this.loadedSprites[x][y] != null) return this.loadedSprites[x][y];
 
-        final int[] pixels = this.image.getRGB(x * SPRITE_SIZE, y * SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE, null, 0, SPRITE_SIZE);
-        return this.loadedSprites[x][y] = new Sprite(SPRITE_SIZE, SPRITE_SIZE, pixels);
+        final int[] pixels = this.image.getRGB(x * this.size, y * this.size, this.size, this.size, null, 0, this.size);
+        return this.loadedSprites[x][y] = new Sprite(this.size, this.size, pixels);
+    }
+
+    public int getSize() {
+        return size;
     }
 }

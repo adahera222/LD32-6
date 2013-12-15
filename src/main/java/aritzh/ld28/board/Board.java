@@ -2,7 +2,6 @@ package aritzh.ld28.board;
 
 import aritzh.ld28.Game;
 import aritzh.ld28.render.Render;
-import aritzh.ld28.render.SpriteSheet;
 import aritzh.ld28.screen.GameOverScreen;
 import aritzh.ld28.screen.PauseScreen;
 import aritzh.ld28.screen.Screen;
@@ -40,6 +39,7 @@ public class Board extends Screen {
     private boolean paused, isStartPause;
     private long pausedDiff = -1, currentMax = 1000, currentTime, millisLeft;
     private final Stats stats;
+    private boolean isPlaying;
 
     public Board(Game game) {
         super(game);
@@ -53,7 +53,10 @@ public class Board extends Screen {
     public void start() {
         this.clear();
         this.lightAnotherUp();
-        this.bgSound.loop();
+        if(!this.game.isMuted()) {
+            this.bgSound.loop();
+            this.isPlaying = true;
+        }
         this.currentTime = System.currentTimeMillis() + this.currentMax;
         this.isStartPause = true;
         this.pause();
@@ -81,7 +84,7 @@ public class Board extends Screen {
 
     public void gameOver() {
         this.dead = true;
-        this.bgSound.stop();
+        if(!this.game.isMuted()) this.bgSound.stop();
         this.stats.finishBefore(this.gameOverCountdownMax - this.gameOverCountdown);
         this.game.silentSwitch(new GameOverScreen(this.game, this.stats));
     }
@@ -122,8 +125,8 @@ public class Board extends Screen {
     public void render(Render render) {
         for (int y = 0; y < BOARD_SIZE; y++) {
             for (int x = 0; x < BOARD_SIZE; x++) {
-                int renderX = x * (SpriteSheet.SPRITE_SIZE + MARGIN) + MARGIN;
-                int renderY = y * (SpriteSheet.SPRITE_SIZE + MARGIN) + MARGIN + TOP_MARGIN;
+                int renderX = x * (this.game.sheet.getSize() + MARGIN) + MARGIN;
+                int renderY = y * (this.game.sheet.getSize() + MARGIN) + MARGIN + TOP_MARGIN;
                 this.squares[x][y].render(renderX, renderY, render, x == hover.x && y == hover.y, x == click.x && y == click.y);
             }
         }
@@ -188,7 +191,7 @@ public class Board extends Screen {
         this.click = this.getSquareCoords(e.getX(), e.getY());
         if (click.x >= BOARD_SIZE || click.y >= BOARD_SIZE) return;
 
-        this.squares[click.x][click.y].playSound();
+        if(!this.game.isMuted()) this.squares[click.x][click.y].playSound();
 
         this.updateTiming();
         switch (this.squares[click.x][click.y]) {
@@ -250,6 +253,8 @@ public class Board extends Screen {
         if (!this.paused) return false;
         this.paused = false;
         boolean ret = this.isStartPause;
+        if(!this.game.isMuted() && !this.isPlaying) this.bgSound.loop();
+        else if (this.game.isMuted() && this.isPlaying) this.bgSound.stop();
         this.isStartPause = false;
         currentTime = System.currentTimeMillis() + pausedDiff;
         pausedDiff = -1;
@@ -259,7 +264,13 @@ public class Board extends Screen {
     }
 
     private Vector2i getSquareCoords(int screenX, int screenY) {
-        final int fullSpriteSize = SpriteSheet.SPRITE_SIZE + MARGIN;
+        final int fullSpriteSize = this.game.sheet.getSize() + MARGIN;
         return new Vector2i(screenX / fullSpriteSize, (screenY - TOP_MARGIN) / fullSpriteSize);
+    }
+
+    @Override
+    public void update(boolean hasFocus) {
+        super.update(hasFocus);
+        if(!this.paused && !hasFocus) this.pause();
     }
 }

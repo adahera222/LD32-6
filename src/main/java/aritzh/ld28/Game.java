@@ -4,18 +4,13 @@ import aritzh.ld28.board.Board;
 import aritzh.ld28.render.Render;
 import aritzh.ld28.render.SpriteSheet;
 import aritzh.ld28.screen.MainMenuScreen;
+import aritzh.ld28.screen.PauseScreen;
 import aritzh.ld28.screen.Screen;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
-import java.awt.Canvas;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Toolkit;
-import java.awt.Window;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
@@ -33,17 +28,20 @@ public class Game extends Canvas implements Runnable {
     private static final Font font = new Font("Arial", Font.BOLD, 14);
     public static Game INSTANCE;
     public final SpriteSheet sheet;
+    public final BufferedImage soundOn, soundOff;
     private final int width;
     private final int height;
     private final boolean applet;
     private final Thread thread;
     private final Input input;
     private final Render render;
+    public final Rectangle soundButton;
     private boolean running;
     private int fps, ups;
     private JFrame frame;
     private Screen currScreen;
     public final BufferedImage background;
+    private boolean muted;
 
     private Game(int width, int height, boolean applet) {
         this.width = width;
@@ -51,10 +49,13 @@ public class Game extends Canvas implements Runnable {
         this.applet = applet;
         this.thread = new Thread(this, "Main Game Thread");
         this.render = new Render(this);
-        this.sheet = new SpriteSheet(this.getClass().getResourceAsStream("/textures/sheet.png"));
+        this.sheet = new SpriteSheet(this.getClass().getResourceAsStream("/textures/sheet.png"), 64);
+        SpriteSheet musicSheet = new SpriteSheet(this.getClass().getResourceAsStream("/textures/music.png"), 128);
         this.input = new Input(this);
         try {
             this.background = ImageIO.read(this.getClass().getResourceAsStream("/textures/bg.png"));
+            this.soundOff =  ImageIO.read(this.getClass().getResourceAsStream("/textures/soundOff.png"));
+            this.soundOn =  ImageIO.read(this.getClass().getResourceAsStream("/textures/soundOn.png"));
         } catch (IOException e) {
             throw new IllegalArgumentException("Error loading background", e);
         }
@@ -64,10 +65,11 @@ public class Game extends Canvas implements Runnable {
         this.setSize(width, height);
 
         if (!this.applet) this.createWindow();
+        this.soundButton = new Rectangle(10, this.getHeight() - 118, 128, 128);
     }
 
     private void createWindow() {
-        this.frame = new JFrame("LD28 Entry");
+        this.frame = new JFrame("You Only Got One Second!");
         this.frame.setResizable(false);
         final Dimension preferredSize = new Dimension(width, height);
         this.frame.getContentPane().setPreferredSize(preferredSize);
@@ -96,8 +98,7 @@ public class Game extends Canvas implements Runnable {
         try {
             this.thread.join(3000);
         } catch (InterruptedException e) {
-            System.err.println("Thread could not be stopped within 3 seconds");
-            e.printStackTrace();
+            System.exit(0);
         }
     }
 
@@ -143,7 +144,7 @@ public class Game extends Canvas implements Runnable {
     }
 
     private void update(double delta) {
-        this.currScreen.update();
+        this.currScreen.update(this.hasFocus());
     }
 
     private void render() {
@@ -164,13 +165,16 @@ public class Game extends Canvas implements Runnable {
 
         this.currScreen.renderGraphics(g);
 
+        if(this.currScreen instanceof MainMenuScreen || this.currScreen instanceof PauseScreen){
+            g.drawImage(this.muted?this.soundOff:this.soundOn, this.soundButton.x, this.soundButton.y, null);
+        }
+
         g.dispose();
         bs.show();
     }
 
     private void updatePS() {
         System.out.println("FPS: " + fps + "\t|\tUPS: " + this.ups);
-        if (!this.applet) this.frame.setTitle("LD28 - FPS: " + this.fps + " - UPS: " + this.ups);
         this.currScreen.updatePS();
     }
 
@@ -215,5 +219,13 @@ public class Game extends Canvas implements Runnable {
             parent = parent.getParent();
         }
         return (Window) parent;
+    }
+
+    public void switchMute() {
+        this.muted = !this.muted;
+    }
+
+    public boolean isMuted(){
+        return this.muted;
     }
 }

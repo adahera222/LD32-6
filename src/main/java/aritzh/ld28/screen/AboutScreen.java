@@ -44,8 +44,8 @@ public class AboutScreen extends Screen {
     }
 
     @Override
-    public void update() {
-        super.update();
+    public void update(boolean hasFocus) {
+        super.update(hasFocus);
         if (this.back.wasActivated()) this.game.openScreen(new MainMenuScreen(this.game));
     }
 
