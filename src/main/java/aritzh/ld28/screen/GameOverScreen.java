@@ -1,6 +1,7 @@
 package aritzh.ld28.screen;
 
 import aritzh.ld28.Game;
+import aritzh.ld28.board.Stats;
 import aritzh.ld28.screen.elements.Button;
 
 import java.awt.Color;
@@ -14,23 +15,15 @@ import java.awt.event.MouseEvent;
  */
 public class GameOverScreen extends Screen {
     private final Game game;
-    private final int score;
+    private final Stats stats;
     private final Button mainMenu, playAgain;
-    private final String str1, str2, str3;
-    private int str1X, str2X, str3X, str1Y, str2Y, str3Y;
-    private boolean alignmentSet;
 
-    public GameOverScreen(Game game, int score) {
+    public GameOverScreen(Game game, Stats stats) {
         super(game);
         this.game = game;
-        this.score = score;
-        this.mainMenu = new Button(this.game.getWidth() / 2 - 150, this.game.getHeight() / 2 + 100, 200, 50, "Main Menu");
-        this.playAgain = new Button(this.game.getWidth() / 2 + 150, this.game.getHeight() / 2 + 100, 200, 50, "Play Again");
-
-        this.str1 = "Your score was:";
-        this.str2 = "" + this.score;
-        this.str3 = "points!";
-
+        this.stats = stats;
+        this.mainMenu = new Button(this.game.getWidth() / 2 - 150, this.game.getHeight() / 2 + 250, 200, 50, "Main Menu");
+        this.playAgain = new Button(this.game.getWidth() / 2 + 150, this.game.getHeight() / 2 + 250, 200, 50, "Play Again");
     }
 
     @Override
@@ -53,27 +46,54 @@ public class GameOverScreen extends Screen {
         this.mainMenu.render(g);
         this.playAgain.render(g);
 
-        if (!alignmentSet) {
-            this.str1X = this.game.getWidth() / 2 - g.getFontMetrics().stringWidth(this.str1) / 2;
-            this.str2X = this.game.getWidth() / 2 - g.getFontMetrics().stringWidth(this.str2) / 2;
-            this.str3X = this.game.getWidth() / 2 - g.getFontMetrics().stringWidth(this.str3) / 2;
-            this.str1Y = 100;
-            this.str2Y = 100 + g.getFontMetrics().getHeight();
-            this.str3Y = 100 + g.getFontMetrics().getHeight() * 2;
-            alignmentSet = true;
-        }
+        int leftMargin = 125;
+        int topMargin = 102;
+        int resultsExtraMargin = 250;
 
         g.setColor(Color.BLACK);
-        g.drawString(this.str1, str1X + 2, str1Y + 2);
-        g.drawString(this.str2, str2X + 2, str2Y + 2);
-        g.drawString(this.str3, str3X + 2, str3Y + 2);
+        // x+2, y+2
+        g.drawString("Score:", leftMargin, topMargin);
+        g.drawString("Success rate:", leftMargin, topMargin + g.getFontMetrics().getHeight());
+        g.drawString("Correct / Total:", leftMargin, topMargin + g.getFontMetrics().getHeight() * 2);
+        g.drawString("Total game time:", leftMargin, topMargin + g.getFontMetrics().getHeight() * 3);
+        g.drawString("Shortest square:", leftMargin, topMargin + g.getFontMetrics().getHeight() * 4);
+        g.drawString("Longest square:", leftMargin, topMargin + g.getFontMetrics().getHeight() * 5);
+        g.drawString("Upgrades achieved:", leftMargin, topMargin + g.getFontMetrics().getHeight() * 6);
+        g.drawString("Upgrades lost:", leftMargin, topMargin + g.getFontMetrics().getHeight() * 7);
 
+        // x+300, y
+        g.drawString("" + this.stats.getScore(), leftMargin+resultsExtraMargin, topMargin);
+        g.drawString(this.stats.getSuccessPercentage() + "%", leftMargin+resultsExtraMargin, topMargin + g.getFontMetrics().getHeight());
+        g.drawString(this.stats.getCorrectClicks() + " / " + this.stats.getTotalSquaresClicked(), leftMargin+resultsExtraMargin, topMargin + g.getFontMetrics().getHeight() * 2);
+        g.drawString("" + this.stats.getTotalGameTime(), leftMargin+resultsExtraMargin, topMargin + g.getFontMetrics().getHeight() * 3);
+        g.drawString("" + this.stats.getShortestSquare(), leftMargin+resultsExtraMargin, topMargin + g.getFontMetrics().getHeight() * 4);
+        g.drawString("" + this.stats.getLongestSquare(), leftMargin+resultsExtraMargin, topMargin + g.getFontMetrics().getHeight() * 5);
+        g.drawString("" + this.stats.getUpgradesClicked(), leftMargin+resultsExtraMargin, topMargin + g.getFontMetrics().getHeight() * 6);
+        g.drawString("" + this.stats.getUpgradesLost(), leftMargin+resultsExtraMargin, topMargin + g.getFontMetrics().getHeight() * 7);
+
+        leftMargin-=2;
+        topMargin-=2;
         g.setColor(Color.WHITE);
-        g.drawString(this.str1, str1X, str1Y);
+        // x, y
+        g.drawString("Score:", leftMargin, topMargin);
+        g.drawString("Success rate:", leftMargin, topMargin + g.getFontMetrics().getHeight());
+        g.drawString("Correct / Total:", leftMargin, topMargin + g.getFontMetrics().getHeight() * 2);
+        g.drawString("Total game time:", leftMargin, topMargin + g.getFontMetrics().getHeight() * 3);
+        g.drawString("Shortest square:", leftMargin, topMargin + g.getFontMetrics().getHeight() * 4);
+        g.drawString("Longest square:", leftMargin, topMargin + g.getFontMetrics().getHeight() * 5);
+        g.drawString("Upgrades achieved:", leftMargin, topMargin + g.getFontMetrics().getHeight() * 6);
+        g.drawString("Upgrades lost:", leftMargin, topMargin + g.getFontMetrics().getHeight() * 7);
+
         g.setColor(Color.GREEN);
-        g.drawString(this.str2, str2X, str2Y);
-        g.setColor(Color.WHITE);
-        g.drawString(this.str3, str3X, str3Y);
+        // x+300
+        g.drawString("" + this.stats.getScore(), leftMargin+resultsExtraMargin, topMargin);
+        g.drawString(this.stats.getSuccessPercentage() + "%", leftMargin+resultsExtraMargin, topMargin + g.getFontMetrics().getHeight());
+        g.drawString(this.stats.getCorrectClicks() + " / " + this.stats.getTotalSquaresClicked(), leftMargin+resultsExtraMargin, topMargin + g.getFontMetrics().getHeight() * 2);
+        g.drawString("" + this.stats.getTotalGameTime(), leftMargin+resultsExtraMargin, topMargin + g.getFontMetrics().getHeight() * 3);
+        g.drawString("" + this.stats.getShortestSquare(), leftMargin+resultsExtraMargin, topMargin + g.getFontMetrics().getHeight() * 4);
+        g.drawString("" + this.stats.getLongestSquare(), leftMargin+resultsExtraMargin, topMargin + g.getFontMetrics().getHeight() * 5);
+        g.drawString("" + this.stats.getUpgradesClicked(), leftMargin+resultsExtraMargin, topMargin + g.getFontMetrics().getHeight() * 6);
+        g.drawString("" + this.stats.getUpgradesLost(), leftMargin+resultsExtraMargin, topMargin + g.getFontMetrics().getHeight() * 7);
 
         g.setFont(f);
     }

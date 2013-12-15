@@ -3,7 +3,6 @@ package aritzh.ld28;
 import aritzh.ld28.board.Board;
 import aritzh.ld28.render.Render;
 import aritzh.ld28.render.SpriteSheet;
-import aritzh.ld28.screen.GameOverScreen;
 import aritzh.ld28.screen.MainMenuScreen;
 import aritzh.ld28.screen.Screen;
 
@@ -145,10 +144,6 @@ public class Game extends Canvas implements Runnable {
 
     private void update(double delta) {
         this.currScreen.update();
-    }
-
-    public void showGameOverScreen(int score) {
-        this.currScreen = new GameOverScreen(this, score);
     }
 
     private void render() {

@@ -3,6 +3,7 @@ package aritzh.ld28.board;
 import aritzh.ld28.Game;
 import aritzh.ld28.render.Render;
 import aritzh.ld28.render.SpriteSheet;
+import aritzh.ld28.screen.GameOverScreen;
 import aritzh.ld28.screen.PauseScreen;
 import aritzh.ld28.screen.Screen;
 import aritzh.ld28.screen.elements.ProgressBar;
@@ -38,6 +39,7 @@ public class Board extends Screen {
     private int gameOverCountdownMax = 60;
     private boolean paused, isStartPause;
     private long pausedDiff = -1, currentMax = 1000, currentTime, millisLeft;
+    private final Stats stats;
 
     public Board(Game game) {
         super(game);
@@ -45,6 +47,7 @@ public class Board extends Screen {
         this.random = new Random();
         this.gameOverBar = new ProgressBar(this.gameOverCountdown, 0, this.gameOverCountdownMax);
         this.currentBar = new ProgressBar(1000, 0, 1000);
+        this.stats = new Stats();
     }
 
     public void start() {
@@ -79,7 +82,8 @@ public class Board extends Screen {
     public void gameOver() {
         this.dead = true;
         this.bgSound.stop();
-        this.game.showGameOverScreen(this.score);
+        this.stats.finishBefore(this.gameOverCountdownMax - this.gameOverCountdown);
+        this.game.silentSwitch(new GameOverScreen(this.game, this.stats));
     }
 
     private void lightAnotherUp() {
@@ -172,9 +176,11 @@ public class Board extends Screen {
 
     @Override
     public void mousePressed(MouseEvent e) {
+        boolean ignoreForTiming = false;
 
         if (this.paused) {
             if (!this.resume()) return;
+            ignoreForTiming = true;
         }
         this.updateTiming();
         if (dead) return;
@@ -187,19 +193,31 @@ public class Board extends Screen {
         this.updateTiming();
         switch (this.squares[click.x][click.y]) {
             case NORMAL:
+                this.stats.unlitSquareClicked();
+                if(!ignoreForTiming) this.stats.updateTiming(this.currentMax - this.millisLeft);
                 this.lightAnotherUp();
                 score -= 10;
                 if (score < 0) score = 0;
                 break;
             case LIT:
+                this.stats.litSquareClicked();
+                if(!ignoreForTiming) this.stats.updateTiming(this.currentMax - this.millisLeft);
                 this.lightAnotherUp();
-                while (currentMax - this.millisLeft > 1000) currentMax -= 1000;
+                while (currentMax - this.millisLeft > 1000) {
+                    currentMax -= 1000;
+                    this.stats.upgradeLost();
+                }
                 currentTime = System.currentTimeMillis() + currentMax;
                 this.updateTiming();
                 score += 20;
                 break;
             case UPGRADE:
-                while (currentMax - this.millisLeft > 1000) currentMax -= 1000;
+                this.stats.upgradeClicked();
+                if(!ignoreForTiming) this.stats.updateTiming(this.currentMax - this.millisLeft);
+                while (currentMax - this.millisLeft > 1000) {
+                    currentMax -= 1000;
+                    this.stats.upgradeLost();
+                }
                 this.currentMax += UPGRADE_EXTRA_TIME;
                 this.gameOverCountdownMax++;
                 this.gameOverCountdown++;
