@@ -50,7 +50,6 @@ public class Game extends Canvas implements Runnable {
         this.thread = new Thread(this, "Main Game Thread");
         this.render = new Render(this);
         this.sheet = new SpriteSheet(this.getClass().getResourceAsStream("/textures/sheet.png"), 64);
-        SpriteSheet musicSheet = new SpriteSheet(this.getClass().getResourceAsStream("/textures/music.png"), 128);
         this.input = new Input(this);
         try {
             this.background = ImageIO.read(this.getClass().getResourceAsStream("/textures/bg.png"));
