@@ -62,7 +62,7 @@ public class AboutScreen extends Screen {
         final int leftMargin = 0;
         final int topMargin = 35;
 
-        for(int i = 0; i<message.length; i++){
+        for (int i = 0; i < message.length; i++) {
             String currMessage = message[i];
             int x = leftMargin + 3 + (this.game.getWidth() - g.getFontMetrics().stringWidth(currMessage)) / 2;
             int y = topMargin + 3 + g.getFontMetrics().getHeight() * i;
@@ -71,7 +71,7 @@ public class AboutScreen extends Screen {
 
         g.setColor(Color.WHITE);
 
-        for(int i = 0; i<message.length; i++){
+        for (int i = 0; i < message.length; i++) {
             String currMessage = message[i];
             int x = leftMargin + (this.game.getWidth() - g.getFontMetrics().stringWidth(currMessage)) / 2;
             int y = topMargin + g.getFontMetrics().getHeight() * i;

@@ -19,14 +19,14 @@ public class PauseScreen extends Screen {
     public PauseScreen(Board board) {
         super(board.game);
         this.board = board;
-        this.backToGame = new Button(this.game.getWidth()/2, this.game.getHeight()/2 - 50, 200, 50, "Continue");
-        this.toMainMenu = new Button(this.game.getWidth()/2, this.game.getHeight()/2 + 50, 200, 50, "Main Menu");
+        this.backToGame = new Button(this.game.getWidth() / 2, this.game.getHeight() / 2 - 50, 200, 50, "Continue");
+        this.toMainMenu = new Button(this.game.getWidth() / 2, this.game.getHeight() / 2 + 50, 200, 50, "Main Menu");
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
         super.keyPressed(e);
-        if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
             this.game.openScreen(this.board);
         }
     }
@@ -41,7 +41,7 @@ public class PauseScreen extends Screen {
     @Override
     public void update() {
         super.update();
-        if(this.backToGame.wasActivated()) {
+        if (this.backToGame.wasActivated()) {
             this.game.openScreen(this.board);
         } else if (this.toMainMenu.wasActivated()) this.game.openScreen(new MainMenuScreen(this.game));
     }

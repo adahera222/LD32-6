@@ -18,7 +18,7 @@ public class ProgressBar {
         this(start, min, max, 0);
     }
 
-    public ProgressBar(int start, int min, int max, int subdivisions){
+    public ProgressBar(int start, int min, int max, int subdivisions) {
         this.progress = start;
         this.min = min;
         this.max = max;
@@ -35,7 +35,7 @@ public class ProgressBar {
 
     public void setProgress(int progress) {
         this.progress = progress;
-        if(this.progress>this.max) this.progress = this.max;
+        if (this.progress > this.max) this.progress = this.max;
     }
 
     public void render(Graphics g, int x, int y, int width, int height) {
@@ -45,13 +45,13 @@ public class ProgressBar {
         g.setColor(Color.BLACK);
         g.fillRect(x, y, width, height);
         g.setColor(Color.WHITE);
-        g.fillRect(x + 2, y + 2, (int) ((width-4) * percent), height - 4);
+        g.fillRect(x + 2, y + 2, (int) ((width - 4) * percent), height - 4);
 
         g.setColor(Color.RED);
-        if(this.subdivisions != 0){
+        if (this.subdivisions != 0) {
             int subdivisionSize = (width) / this.subdivisions;
-            for(int i = 1; i<subdivisions; i++){
-                g.fillRect(x + subdivisionSize*i, y+2, 4, height-4);
+            for (int i = 1; i < subdivisions; i++) {
+                g.fillRect(x + subdivisionSize * i, y + 2, 4, height - 4);
             }
         }
     }

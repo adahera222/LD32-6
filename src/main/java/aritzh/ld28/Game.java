@@ -109,7 +109,7 @@ public class Game extends Canvas implements Runnable {
 
     public synchronized void start() {
         this.running = true;
-        if(!this.applet) this.frame.setVisible(true);
+        if (!this.applet) this.frame.setVisible(true);
         this.thread.start();
     }
 
@@ -175,7 +175,7 @@ public class Game extends Canvas implements Runnable {
 
     private void updatePS() {
         System.out.println("FPS: " + fps + "\t|\tUPS: " + this.ups);
-        if(!this.applet) this.frame.setTitle("LD28 - FPS: " + this.fps + " - UPS: " + this.ups);
+        if (!this.applet) this.frame.setTitle("LD28 - FPS: " + this.fps + " - UPS: " + this.ups);
         this.currScreen.updatePS();
     }
 
@@ -184,21 +184,21 @@ public class Game extends Canvas implements Runnable {
         ((Board) this.currScreen).start();
     }
 
-    public void openScreen(Screen screen){
+    public void openScreen(Screen screen) {
         this.currScreen.closing();
         this.currScreen = screen;
         this.currScreen.opening();
     }
 
-    public void silentSwitch(Screen screen){
+    public void silentSwitch(Screen screen) {
         (this.currScreen = screen).opening();
     }
 
-    public int getOnScreenX(){
+    public int getOnScreenX() {
         return this.getParent().getX();
     }
 
-    public int getOnScreenY(){
+    public int getOnScreenY() {
         return this.getParent().getY();
     }
 
@@ -214,9 +214,9 @@ public class Game extends Canvas implements Runnable {
         return this.currScreen;
     }
 
-    private Window getParentWindow(){
+    private Window getParentWindow() {
         Container parent = this.getParent();
-        while (parent.getParent() != null && !(parent instanceof Window)){
+        while (parent.getParent() != null && !(parent instanceof Window)) {
             parent = parent.getParent();
         }
         return (Window) parent;

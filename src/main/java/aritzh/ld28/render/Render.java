@@ -32,13 +32,13 @@ public class Render {
     public void drawSprite(int x, int y, int width, int height, int[] pixels) {
 
         int maxX = Math.min(width, this.width);
-        int maxY = Math.min(y+height, this.height);
+        int maxY = Math.min(y + height, this.height);
 
         for (int yp = 0; yp < width; yp++) {
             final int screenY = y + yp;
             for (int xp = 0; xp < height; xp++) {
                 final int screenX = x + xp;
-                if(screenX >= this.width || screenY >= this.height) return;
+                if (screenX >= this.width || screenY >= this.height) return;
                 this.pixels[screenX + this.width * screenY] = pixels[xp + yp * width];
             }
         }

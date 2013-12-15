@@ -17,9 +17,9 @@ public class MainMenuScreen extends Screen {
 
     public MainMenuScreen(Game game) {
         super(game);
-        start = new Button(game.getWidth()/2, game.getHeight()/2 - 100, 200, 50, "Play");
-        about = new Button(game.getWidth()/2, game.getHeight()/2, 200, 50, "About");
-        exit = new Button(game.getWidth()/2, game.getHeight()/2 + 100, 200, 50, "Exit");
+        start = new Button(game.getWidth() / 2, game.getHeight() / 2 - 100, 200, 50, "Play");
+        about = new Button(game.getWidth() / 2, game.getHeight() / 2, 200, 50, "About");
+        exit = new Button(game.getWidth() / 2, game.getHeight() / 2 + 100, 200, 50, "Exit");
     }
 
     @Override
@@ -64,11 +64,11 @@ public class MainMenuScreen extends Screen {
     public void update() {
         super.update();
 
-        if(start.wasActivated()){
+        if (start.wasActivated()) {
             this.game.startGame();
-        } else if(about.wasActivated()){
+        } else if (about.wasActivated()) {
             this.game.openScreen(new AboutScreen(this.game));
-        } else if(exit.wasActivated()){
+        } else if (exit.wasActivated()) {
             this.game.stop();
         }
     }

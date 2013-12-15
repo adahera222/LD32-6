@@ -10,7 +10,7 @@ import java.awt.event.MouseMotionListener;
  * @author Aritz Lopez
  * @license Lesser GNU Public License v3 (http://www.gnu.org/licenses/lgpl.html)
  */
-public class Input extends MouseAdapter implements MouseMotionListener, KeyListener{
+public class Input extends MouseAdapter implements MouseMotionListener, KeyListener {
 
     private Game game;
 
@@ -26,33 +26,33 @@ public class Input extends MouseAdapter implements MouseMotionListener, KeyListe
     @Override
     public void mouseReleased(MouseEvent e) {
         super.mouseReleased(e);
-        if(!(this.game.getCurrentScreen() == null))game.getCurrentScreen().mouseReleased(e);
+        if (!(this.game.getCurrentScreen() == null)) game.getCurrentScreen().mouseReleased(e);
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
         super.mousePressed(e);
-        if(!(this.game.getCurrentScreen() == null))game.getCurrentScreen().mousePressed(e);
+        if (!(this.game.getCurrentScreen() == null)) game.getCurrentScreen().mousePressed(e);
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
         super.mouseMoved(e);
-        if(!(this.game.getCurrentScreen() == null))game.getCurrentScreen().mouseMoved(e);
+        if (!(this.game.getCurrentScreen() == null)) game.getCurrentScreen().mouseMoved(e);
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
-        if(!(this.game.getCurrentScreen() == null))game.getCurrentScreen().keyTyped(e);
+        if (!(this.game.getCurrentScreen() == null)) game.getCurrentScreen().keyTyped(e);
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if(!(this.game.getCurrentScreen() == null))game.getCurrentScreen().keyPressed(e);
+        if (!(this.game.getCurrentScreen() == null)) game.getCurrentScreen().keyPressed(e);
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if(!(this.game.getCurrentScreen() == null))game.getCurrentScreen().keyReleased(e);
+        if (!(this.game.getCurrentScreen() == null)) game.getCurrentScreen().keyReleased(e);
     }
 }
