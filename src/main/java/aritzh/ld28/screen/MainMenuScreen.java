@@ -24,10 +24,10 @@ public class MainMenuScreen extends Screen {
 
     @Override
     public void renderGraphics(Graphics g) {
+        super.renderGraphics(g);
+
         Font f = g.getFont();
         g.setFont(Game.bigFont);
-
-        super.renderGraphics(g);
 
         this.start.render(g);
         this.about.render(g);

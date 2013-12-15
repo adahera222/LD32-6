@@ -46,7 +46,7 @@ public abstract class Screen implements MouseMotionListener, MouseListener, KeyL
     }
 
     public void renderGraphics(Graphics g) {
-
+        g.drawImage(this.game.background, 0, 0, null);
     }
 
     public void updatePS() {

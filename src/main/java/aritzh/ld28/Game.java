@@ -6,6 +6,7 @@ import aritzh.ld28.screen.GameOverScreen;
 import aritzh.ld28.screen.MainMenuScreen;
 import aritzh.ld28.screen.Screen;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 import java.awt.Canvas;
@@ -18,6 +19,8 @@ import java.awt.Window;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 /**
  * @author Aritz Lopez
@@ -40,6 +43,7 @@ public class Game extends Canvas implements Runnable {
     private int fps, ups;
     private JFrame frame;
     private Screen currScreen;
+    public final BufferedImage background;
 
     private Game(int width, int height, boolean applet) {
         this.width = width;
@@ -49,6 +53,11 @@ public class Game extends Canvas implements Runnable {
         this.render = new Render(this);
         this.sheet = new SpriteSheet(this.getClass().getResourceAsStream("/textures/sheet.png"));
         this.input = new Input(this);
+        try {
+            this.background = ImageIO.read(this.getClass().getResourceAsStream("/textures/bg.png"));
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Error loading background", e);
+        }
         this.addMouseListener(this.input);
         this.addMouseMotionListener(this.input);
         this.addKeyListener(this.input);
@@ -150,6 +159,7 @@ public class Game extends Canvas implements Runnable {
         }
         Graphics g = bs.getDrawGraphics();
         g.setFont(Game.font);
+
         render.clear();
 
         this.currScreen.render(this.render);
@@ -157,6 +167,7 @@ public class Game extends Canvas implements Runnable {
         g.drawImage(this.render.getImage(), 0, 0, this.width, this.height, null);
 
         this.currScreen.renderGraphics(g);
+
         g.dispose();
         bs.show();
     }

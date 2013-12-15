@@ -45,12 +45,11 @@ public class GameOverScreen extends Screen {
 
     @Override
     public void renderGraphics(Graphics g) {
-
+        super.renderGraphics(g);
         Font f = g.getFont();
 
         g.setFont(Game.bigFont);
 
-        super.renderGraphics(g);
         this.mainMenu.render(g);
         this.playAgain.render(g);
 
