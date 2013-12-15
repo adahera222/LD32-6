@@ -1,6 +1,6 @@
 package aritzh.ld28.screen;
 
-import aritzh.ld28.Board;
+import aritzh.ld28.board.Board;
 import aritzh.ld28.screen.elements.Button;
 
 import java.awt.Graphics;

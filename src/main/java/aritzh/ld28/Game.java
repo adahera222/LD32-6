@@ -1,5 +1,6 @@
 package aritzh.ld28;
 
+import aritzh.ld28.board.Board;
 import aritzh.ld28.render.Render;
 import aritzh.ld28.render.SpriteSheet;
 import aritzh.ld28.screen.GameOverScreen;

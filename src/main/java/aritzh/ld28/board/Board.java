@@ -1,6 +1,6 @@
-package aritzh.ld28;
+package aritzh.ld28.board;
 
-import aritzh.ld28.board.Square;
+import aritzh.ld28.Game;
 import aritzh.ld28.render.Render;
 import aritzh.ld28.render.SpriteSheet;
 import aritzh.ld28.screen.PauseScreen;
